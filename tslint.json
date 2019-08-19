@@ -6,7 +6,9 @@
     "jsRules": {},
     "rules": {
         "quotemark": [true, "single"],
-        "indent": [true, "spaces", 2]
+        "indent": [true, "spaces", 2],
+        "trailing-comma": [true, "arrays"],
+        "interface-name": [true, "never-prefix"]
     },
     "rulesDirectory": []
 }
