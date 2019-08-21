@@ -17,6 +17,8 @@ export class Game {
         this.canvas = document.getElementById('renderCanvas');
         this.engine = new Engine(this.canvas, false);
         this.scene = new Scene(this.engine);
+        this.scene.gravity = new Vector3(0, -9.81, 0);
+        this.scene.collisionsEnabled = true;
         this.createScene();
     }
 
@@ -39,17 +41,18 @@ export class Game {
     }
 
     private createScene() {
-        const camera = new UniversalCamera('Camera', new Vector3(0, 10, 10), this.scene);
-        camera.setTarget(Vector3.Zero());
+        const camera = new UniversalCamera('Camera', new Vector3(0, 2, 0), this.scene);
+        camera.setTarget(new Vector3(0, 2, 1));
         camera.attachControl(this.canvas, true);
+        camera.applyGravity = true;
+        camera.ellipsoid = new Vector3(0.5, 1.7, 0.5);
+        camera.checkCollisions = true;
+        camera.minZ = 0;
 
         const light1 = new DirectionalLight('light1', new Vector3(0.5, -1, 0), this.scene);
 
-        const sphere = new Entity(new SphereGraphicsComponent(this.scene));
-        sphere.position.y = 0.5;
         const ground = new Entity(new GroundGraphicsComponent(this.scene));
 
-        this.addEntity(sphere);
         this.addEntity(ground);
     }
 

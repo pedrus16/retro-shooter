@@ -8,7 +8,8 @@ import { GraphicsComponent } from './graphics.component';
 export class GroundGraphicsComponent implements GraphicsComponent {
 
     constructor(scene: Scene) {
-        SceneLoader.Append('./', mapFile, scene, (scene) => {
+        SceneLoader.Append('./', mapFile, scene, (loadedScene) => {
+            loadedScene.meshes.forEach((mesh) => mesh.checkCollisions = true);
             console.log('map loaded');
         });
     }
