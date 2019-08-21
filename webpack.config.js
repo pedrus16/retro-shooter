@@ -25,6 +25,12 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
+            },
+            {
+                test: /\.(gltf)$/,
+                use: [
+                    'file-loader'
+                ]
             }
         ]
     },

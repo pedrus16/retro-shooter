@@ -1,4 +1,6 @@
-import { ArcRotateCamera, DirectionalLight, Engine, Scene, Vector3 } from 'babylonjs';
+import 'babylonjs-loaders';
+
+import { DirectionalLight, Engine, Scene, UniversalCamera, Vector3 } from 'babylonjs';
 
 import { Entity } from './entity.class';
 import { GroundGraphicsComponent } from './ground-graphics.component';
@@ -37,9 +39,8 @@ export class Game {
     }
 
     private createScene() {
-        const camera: ArcRotateCamera = new ArcRotateCamera(
-            'Camera', Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), this.scene
-        );
+        const camera = new UniversalCamera('Camera', new Vector3(0, 10, 10), this.scene);
+        camera.setTarget(Vector3.Zero());
         camera.attachControl(this.canvas, true);
 
         const light1 = new DirectionalLight('light1', new Vector3(0.5, -1, 0), this.scene);
