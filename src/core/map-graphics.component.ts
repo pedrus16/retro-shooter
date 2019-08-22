@@ -5,7 +5,7 @@ import mapFile from '../assets/maps/test.gltf';
 import { Entity } from './entity.class';
 import { GraphicsComponent } from './graphics.component';
 
-export class GroundGraphicsComponent implements GraphicsComponent {
+export class MapGraphicsComponent implements GraphicsComponent {
 
     constructor(scene: Scene) {
         SceneLoader.Append('./', mapFile, scene, (loadedScene) => {
