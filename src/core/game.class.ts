@@ -1,10 +1,11 @@
 import 'babylonjs-loaders';
 
-import { Color3, DirectionalLight, Engine, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
+import { Engine, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
 
+import { CharacterGraphicsComponent } from './character-graphics.component';
+import { CharacterInputComponent } from './character-input.component';
 import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
-import { SphereGraphicsComponent } from './sphere-graphics.component';
 
 export class Game {
 
@@ -46,11 +47,19 @@ export class Game {
         camera.attachControl(this.canvas,  true);
         camera.minZ = 0;
 
-        const light = new HemisphericLight('light1', new Vector3(-1, 1, -1), this.scene);
+        const light = new HemisphericLight('light1', new Vector3(-1, 2, -0.5), this.scene);
 
-        const ground = new Entity(new MapGraphicsComponent(this.scene));
+        const ground = new Entity(new MapGraphicsComponent(this.scene), { update: () => null });
+        const player = this.buildPlayerEntity();
 
         this.addEntity(ground);
+        this.addEntity(player);
+
+        player.moveTo(new Vector3(0, 1, 0));
+    }
+
+    private buildPlayerEntity(): Entity {
+        return new Entity(new CharacterGraphicsComponent(this.scene), new CharacterInputComponent());
     }
 
     private update() {

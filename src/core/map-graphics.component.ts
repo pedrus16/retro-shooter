@@ -3,7 +3,7 @@ import { Mesh, MeshBuilder, Scene, SceneLoader, StandardMaterial, Texture } from
 import groundImage from '../assets/images/ground.jpg';
 import mapFile from '../assets/maps/test.gltf';
 import { Entity } from './entity.class';
-import { GraphicsComponent } from './graphics.component';
+import { GraphicsComponent } from './graphics-component.interface';
 
 export class MapGraphicsComponent implements GraphicsComponent {
 
