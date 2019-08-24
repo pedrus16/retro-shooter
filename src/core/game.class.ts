@@ -1,11 +1,14 @@
 import 'babylonjs-loaders';
 
-import { Engine, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
+import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
 
 import { CharacterGraphicsComponent } from './character-graphics.component';
 import { CharacterInputComponent } from './character-input.component';
+import { CharacterPhysicsComponent } from './character-physics.component';
 import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
+
+export const INPUT_MAP: { [code: string]: boolean } = {};
 
 export class Game {
 
@@ -20,6 +23,17 @@ export class Game {
         this.scene = new Scene(this.engine);
         this.scene.gravity = new Vector3(0, -9.81, 0);
         this.scene.collisionsEnabled = true;
+
+        this.scene.actionManager = new ActionManager(this.scene);
+
+        this.scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (event) => {
+            INPUT_MAP[event.sourceEvent.code] = event.sourceEvent.type === 'keydown';
+        }));
+
+        this.scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (event) => {
+            INPUT_MAP[event.sourceEvent.code] = event.sourceEvent.type === 'keydown';
+        }));
+
         this.createScene();
     }
 
@@ -49,17 +63,21 @@ export class Game {
 
         const light = new HemisphericLight('light1', new Vector3(-1, 2, -0.5), this.scene);
 
-        const ground = new Entity(new MapGraphicsComponent(this.scene), { update: () => null });
+        const ground = new Entity(new MapGraphicsComponent(this.scene), { update: () => null }, { update: () => null });
         const player = this.buildPlayerEntity();
 
         this.addEntity(ground);
         this.addEntity(player);
 
-        player.moveTo(new Vector3(0, 1, 0));
+        player.position = new Vector3(0, 1, 0);
     }
 
     private buildPlayerEntity(): Entity {
-        return new Entity(new CharacterGraphicsComponent(this.scene), new CharacterInputComponent());
+        return new Entity(
+            new CharacterGraphicsComponent(this.scene),
+            new CharacterInputComponent(),
+            new CharacterPhysicsComponent(this.engine)
+        );
     }
 
     private update() {
