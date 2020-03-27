@@ -17,7 +17,7 @@ export class Entity {
     ) {}
 
     public update(scene: Scene) {
-        this.inputComponent.update(this, scene);
+        this.inputComponent.update(this);
         this.physicsComponent.update(this, scene);
         this.graphicsComponent.update(this, scene);
     }

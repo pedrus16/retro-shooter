@@ -7,6 +7,7 @@ import { CharacterInputComponent } from './character-input.component';
 import { CharacterPhysicsComponent } from './character-physics.component';
 import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
+import { MapPhysicsComponent } from './map-physics.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -35,6 +36,8 @@ export class Game {
         }));
 
         this.createScene();
+
+        this.scene.debugLayer.show();
     }
 
     public start() {
@@ -63,20 +66,20 @@ export class Game {
 
         const light = new HemisphericLight('light1', new Vector3(-1, 2, -0.5), this.scene);
 
-        const ground = new Entity(new MapGraphicsComponent(this.scene), { update: () => null }, { update: () => null });
+        const ground = new Entity({ update: () => null }, new MapGraphicsComponent(this.scene), { update: () => null });
         const player = this.buildPlayerEntity();
 
         this.addEntity(ground);
         this.addEntity(player);
 
-        player.position = new Vector3(0, 1, 0);
+        player.position = new Vector3(0, 2, 0);
     }
 
     private buildPlayerEntity(): Entity {
         return new Entity(
             new CharacterGraphicsComponent(this.scene),
             new CharacterInputComponent(),
-            new CharacterPhysicsComponent(this.engine)
+            new CharacterPhysicsComponent(this.engine, this.scene)
         );
     }
 

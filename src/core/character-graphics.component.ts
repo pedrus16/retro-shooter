@@ -5,15 +5,15 @@ import { GraphicsComponent } from './graphics-component.interface';
 
 export class CharacterGraphicsComponent implements GraphicsComponent {
 
-    private cubeMesh: Mesh;
+    // private cubeMesh: Mesh;
 
     constructor(scene: Scene) {
-        this.cubeMesh = MeshBuilder.CreateBox('cube', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
+        // this.cubeMesh = MeshBuilder.CreateBox('playerCube', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
     }
 
     public update(host: Entity) {
-        this.cubeMesh.position = host.position;
-        this.cubeMesh.rotationQuaternion = host.rotation;
+        // this.cubeMesh.position = host.position;
+        // this.cubeMesh.rotationQuaternion = host.rotation;
     }
 
 }

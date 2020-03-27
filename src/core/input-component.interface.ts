@@ -4,6 +4,6 @@ import { Entity } from './entity.class';
 
 export interface InputComponent {
 
-    update(host: Entity, scene: Scene): void;
+    update(host: Entity): void;
 
 }
