@@ -77,8 +77,8 @@ export class Game {
 
     private buildPlayerEntity(): Entity {
         return new Entity(
-            new CharacterGraphicsComponent(this.scene),
             new CharacterInputComponent(),
+            new CharacterGraphicsComponent(this.scene),
             new CharacterPhysicsComponent(this.engine, this.scene)
         );
     }
