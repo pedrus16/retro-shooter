@@ -1,4 +1,4 @@
-import { Mesh, MeshBuilder, Scene, SceneLoader, StandardMaterial, Texture } from 'babylonjs';
+import { Scene, SceneLoader } from 'babylonjs';
 
 import mapFile from '../assets/maps/test.gltf';
 import { GraphicsComponent } from './graphics-component.interface';

@@ -8,8 +8,11 @@ import { CharacterPhysicsComponent } from './character-physics.component';
 import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
 import { MapPhysicsComponent } from './map-physics.component';
+import { CharacterCameraComponent } from './character-camera.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
+
+const GRAVITY_Y = -1;
 
 export class Game {
 
@@ -20,9 +23,10 @@ export class Game {
 
     constructor() {
         this.canvas = document.getElementById('renderCanvas');
+
         this.engine = new Engine(this.canvas, false);
         this.scene = new Scene(this.engine);
-        this.scene.gravity = new Vector3(0, -9.81, 0);
+        this.scene.gravity = new Vector3(0, GRAVITY_Y, 0);
         this.scene.collisionsEnabled = true;
 
         this.scene.actionManager = new ActionManager(this.scene);
@@ -37,7 +41,7 @@ export class Game {
 
         this.createScene();
 
-        this.scene.debugLayer.show();
+        // this.scene.debugLayer.show();
     }
 
     public start() {
@@ -52,6 +56,10 @@ export class Game {
         window.addEventListener('resize', () => {
             this.engine.resize();
         });
+
+        this.scene.onPointerDown = () => {
+            this.engine.enterFullscreen(true);
+        };
     }
 
     public addEntity(entity: Entity) {
@@ -59,10 +67,10 @@ export class Game {
     }
 
     private createScene() {
-        const camera = new UniversalCamera('Camera', new Vector3(20, 10, -20), this.scene);
-        camera.setTarget(new Vector3(0, 1, 0));
-        camera.attachControl(this.canvas,  true);
-        camera.minZ = 0;
+        // const camera = new UniversalCamera('Camera', new Vector3(20, 10, -20), this.scene);
+        // camera.setTarget(new Vector3(0, 1, 0));
+        // camera.attachControl(this.canvas,  true);
+        // camera.minZ = 0;
 
         const light = new HemisphericLight('light1', new Vector3(-1, 2, -0.5), this.scene);
 
@@ -79,7 +87,8 @@ export class Game {
         return new Entity(
             new CharacterInputComponent(),
             new CharacterGraphicsComponent(this.scene),
-            new CharacterPhysicsComponent(this.engine, this.scene)
+            new CharacterPhysicsComponent(this.engine, this.scene),
+            new CharacterCameraComponent(this.scene)
         );
     }
 

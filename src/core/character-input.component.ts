@@ -1,8 +1,10 @@
-import { Vector3 } from 'babylonjs';
+import { Vector3, Quaternion } from 'babylonjs';
 
 import { Entity } from './entity.class';
 import { INPUT_MAP } from './game.class';
 import { InputComponent } from './input-component.interface';
+
+const JUMP_VELOCITY = 20;
 
 export class CharacterInputComponent implements InputComponent {
 
@@ -12,24 +14,27 @@ export class CharacterInputComponent implements InputComponent {
         const direction = Vector3.Zero();
 
         if (INPUT_MAP.KeyW) {
-            direction.x += 1;
-        }
-        if (INPUT_MAP.KeyS) {
-            direction.x -= 1;
-        }
-        if (INPUT_MAP.KeyA) {
             direction.z += 1;
         }
-        if (INPUT_MAP.KeyD) {
+        if (INPUT_MAP.KeyS) {
             direction.z -= 1;
         }
+        if (INPUT_MAP.KeyD) {
+            direction.x += 1;
+        }
+        if (INPUT_MAP.KeyA) {
+            direction.x -= 1;
+        }
 
-        host.velocity = direction.normalize().scale(20).add(new Vector3(0, host.velocity.y, 0));
+        const directionFromRotation = Vector3.Zero();
+        const verticalAxisRotation = new Quaternion(0, host.rotationQuaternion.y, 0, host.rotationQuaternion.w);
+        direction.rotateByQuaternionToRef(verticalAxisRotation, directionFromRotation);
+        host.velocity = directionFromRotation.normalize().scale(10).add(new Vector3(0, host.velocity.y, 0));
 
         if (INPUT_MAP.Space) {
             if (this.spaceReleased) {
                 this.spaceReleased = false;
-                host.velocity.y = 100;
+                host.velocity.y = JUMP_VELOCITY;
             }
         } else {
             this.spaceReleased = true;
