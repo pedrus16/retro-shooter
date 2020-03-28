@@ -4,7 +4,7 @@ import { Entity } from './entity.class';
 import { INPUT_MAP } from './game.class';
 import { InputComponent } from './input-component.interface';
 
-const JUMP_VELOCITY = 20;
+const JUMP_VELOCITY = 5;
 
 export class CharacterInputComponent implements InputComponent {
 

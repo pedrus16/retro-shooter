@@ -18,7 +18,8 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
         const deltaTimeSec = this.engine.getDeltaTime() / 1000;
         this.cubeMesh.position = host.position;
 
-        host.velocity = host.velocity.add(this.scene.gravity);
+        const gravity = this.scene.gravity.multiplyByFloats(deltaTimeSec, deltaTimeSec, deltaTimeSec);
+        host.velocity = host.velocity.add(gravity);
 
         const displacement = new Vector3(
             host.velocity.x * deltaTimeSec,

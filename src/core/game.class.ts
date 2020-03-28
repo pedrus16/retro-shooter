@@ -12,7 +12,7 @@ import { CharacterCameraComponent } from './character-camera.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
-const GRAVITY_Y = -1;
+const GRAVITY_Y = -9.81;
 
 export class Game {
 
