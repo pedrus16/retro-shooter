@@ -1,8 +1,8 @@
 import { Vector3, Quaternion } from 'babylonjs';
 
-import { Entity } from './entity.class';
-import { INPUT_MAP } from './game.class';
-import { InputComponent } from './input-component.interface';
+import { Entity } from '../entity.class';
+import { INPUT_MAP } from '../game.class';
+import { InputComponent } from '../input-component.interface';
 
 const JUMP_VELOCITY = 5;
 

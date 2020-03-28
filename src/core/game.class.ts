@@ -2,13 +2,13 @@ import 'babylonjs-loaders';
 
 import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
 
-import { CharacterGraphicsComponent } from './character-graphics.component';
-import { CharacterInputComponent } from './character-input.component';
-import { CharacterPhysicsComponent } from './character-physics.component';
+import { CharacterGraphicsComponent } from './character/character-graphics.component';
+import { CharacterInputComponent } from './character/character-input.component';
+import { CharacterPhysicsComponent } from './character/character-physics.component';
 import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
 import { MapPhysicsComponent } from './map-physics.component';
-import { CharacterCameraComponent } from './character-camera.component';
+import { CharacterCameraComponent } from './character/character-camera.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -41,7 +41,7 @@ export class Game {
 
         this.createScene();
 
-        // this.scene.debugLayer.show();
+        this.scene.debugLayer.show();
     }
 
     public start() {
@@ -80,7 +80,7 @@ export class Game {
         this.addEntity(ground);
         this.addEntity(player);
 
-        player.position = new Vector3(0, 2, 0);
+        player.position = new Vector3(9.7, 10, 5);
     }
 
     private buildPlayerEntity(): Entity {

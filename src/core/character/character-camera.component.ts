@@ -1,7 +1,7 @@
 import { Engine, Scene, UniversalCamera, Vector3, Quaternion, FreeCamera } from 'babylonjs';
 
-import { Entity } from './entity.class';
-import { CameraComponent } from './camera-component.interface';
+import { Entity } from '../entity.class';
+import { CameraComponent } from '../camera-component.interface';
 
 export class CharacterCameraComponent implements CameraComponent {
     

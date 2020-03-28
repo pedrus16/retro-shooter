@@ -1,7 +1,7 @@
 import { Mesh, MeshBuilder, Scene, Camera, Vector3, UniversalCamera } from 'babylonjs';
 
-import { Entity } from './entity.class';
-import { GraphicsComponent } from './graphics-component.interface';
+import { Entity } from '../entity.class';
+import { GraphicsComponent } from '../graphics-component.interface';
 
 export class CharacterGraphicsComponent implements GraphicsComponent {
 
