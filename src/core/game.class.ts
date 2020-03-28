@@ -1,6 +1,6 @@
 import 'babylonjs-loaders';
 
-import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3 } from 'babylonjs';
+import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3, PhysicsImpostor } from 'babylonjs';
 
 import { CharacterGraphicsComponent } from './character/character-graphics.component';
 import { CharacterInputComponent } from './character/character-input.component';
@@ -80,13 +80,13 @@ export class Game {
         this.addEntity(ground);
         this.addEntity(player);
 
-        player.position = new Vector3(9.7, 10, 5);
+        player.position = new Vector3(9.7, 10, 0);
     }
 
     private buildPlayerEntity(): Entity {
         return new Entity(
             new CharacterInputComponent(),
-            new CharacterGraphicsComponent(this.scene),
+            new CharacterGraphicsComponent(this.engine, this.scene),
             new CharacterPhysicsComponent(this.engine, this.scene),
             new CharacterCameraComponent(this.scene)
         );

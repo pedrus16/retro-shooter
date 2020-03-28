@@ -3,7 +3,7 @@ import { Engine, Scene, MeshBuilder, Mesh, Vector3 } from 'babylonjs';
 import { Entity } from '../entity.class';
 import { PhysicsComponent } from '../physics-component.interface';
 
-const TICK_PER_SECOND = 60;
+export const TICK_PER_SECOND = 60;
 
 export class CharacterPhysicsComponent implements PhysicsComponent {
     
@@ -14,16 +14,15 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
 
     constructor(private engine: Engine, private scene: Scene) {
         this.cubeMesh = MeshBuilder.CreateBox('playerCollision', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
-        this.cubeMesh.ellipsoid = new Vector3(1, 0.9, 1);
+        this.cubeMesh.ellipsoid = new Vector3(0.25, 0.9, 0.25);
         this.cubeMesh.visibility = 0;
         this.cubeMesh.checkCollisions = true;
-        this.cubeMesh.collisionGroup = 0b11;
+        this.cubeMesh.collisionGroup = 0b1;
 
         // this.feetMesh = MeshBuilder.CreateCylinder('feetCollision', { height: 0.1, diameter: 0.5 });
         // this.feetMesh.parent = this.cubeMesh;
         // this.feetMesh.position = new Vector3(0, -0.9, 0);
         // this.feetMesh.collisionGroup = 0b00;
-
     }
 
     public update(host: Entity, scene: Scene) {
@@ -49,9 +48,9 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
     
             const prevPos = this.cubeMesh.position.clone();
             this.cubeMesh.moveWithCollisions(displacement);
-            const velocity = this.cubeMesh.position.subtract(prevPos);
-    
-            host.velocity = velocity.divide(new Vector3(deltaTimeSec, deltaTimeSec, deltaTimeSec));
+            const actualDisplacement = this.cubeMesh.position.subtract(prevPos);
+
+            host.velocity = actualDisplacement.divide(new Vector3(deltaTimeSec, deltaTimeSec, deltaTimeSec));
             host.position = this.cubeMesh.position;
     
             this.elapsedTimeSec -= tickDurationSec;
