@@ -1,4 +1,4 @@
-import { Engine, Scene, MeshBuilder, Mesh, Vector3 } from 'babylonjs';
+import { Engine, Scene, MeshBuilder, Mesh, Vector3, Ray } from 'babylonjs';
 
 import { Entity } from '../entity.class';
 import { PhysicsComponent } from '../physics-component.interface';
@@ -11,6 +11,7 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
     // private feetMesh: Mesh;
 
     private elapsedTimeSec = 0;
+    private groundHit = false;
 
     constructor(private engine: Engine, private scene: Scene) {
         this.cubeMesh = MeshBuilder.CreateBox('playerCollision', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
@@ -37,15 +38,27 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
             const deltaTimeSec = tickDurationSec;
             this.cubeMesh.position = host.position;
     
-            const gravity = this.scene.gravity.multiplyByFloats(deltaTimeSec, deltaTimeSec, deltaTimeSec);
+            const gravity = this.scene.gravity.scale(deltaTimeSec);
             host.velocity = host.velocity.add(gravity);
+
+            const ray = new Ray(this.cubeMesh.position.add(new Vector3(0, -0.9, 0)), new Vector3(0, -1, 0), 1);
+
+            const pickInfo = scene.pickWithRay(ray, (mesh) => {
+                return mesh != this.cubeMesh && (mesh.collisionGroup & this.cubeMesh.collisionGroup) > 0;
+            });
+
+            this.groundHit = !!pickInfo && pickInfo.hit && pickInfo.distance < 0.05;
+
+            if (this.groundHit) {
+                host.velocity.y = host.velocity.y > 0 ? host.velocity.y : 0;
+            }
     
             const displacement = new Vector3(
                 host.velocity.x * deltaTimeSec,
                 host.velocity.y * deltaTimeSec,
                 host.velocity.z * deltaTimeSec
             );
-    
+
             const prevPos = this.cubeMesh.position.clone();
             this.cubeMesh.moveWithCollisions(displacement);
             const actualDisplacement = this.cubeMesh.position.subtract(prevPos);
@@ -57,5 +70,9 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
         }
 
     }
+
+    public get touchingGround() {
+        return this.groundHit;
+    } 
 
 }

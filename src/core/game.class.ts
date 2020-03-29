@@ -84,10 +84,11 @@ export class Game {
     }
 
     private buildPlayerEntity(): Entity {
+        const playerPhysics = new CharacterPhysicsComponent(this.engine, this.scene);
         return new Entity(
-            new CharacterInputComponent(),
+            new CharacterInputComponent(playerPhysics),
             new CharacterGraphicsComponent(this.engine, this.scene),
-            new CharacterPhysicsComponent(this.engine, this.scene),
+            playerPhysics,
             new CharacterCameraComponent(this.scene)
         );
     }

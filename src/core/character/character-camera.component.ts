@@ -18,6 +18,7 @@ export class CharacterCameraComponent implements CameraComponent {
     }
 
     public update(host: Entity) {
+        //  TODO Interpolate host position to have smooth movement;
         this.camera.position = host.position.add(new Vector3(0, 0.9, 0));
         const verticalAxisRotation = new Quaternion(0, this.camera.rotationQuaternion.y, 0, this.camera.rotationQuaternion.w);
         host.rotationQuaternion = verticalAxisRotation;

@@ -6,13 +6,13 @@ import { TICK_PER_SECOND } from './character-physics.component';
 
 export class CharacterGraphicsComponent implements GraphicsComponent {
 
-    private cubeMesh: Mesh;
+    // private cubeMesh: Mesh;
     // private prevHostPosition = Vector3.Zero();
     // private elapsedTimeSec = 0;
 
     constructor(private engine: Engine, scene: Scene) {
-        this.cubeMesh = MeshBuilder.CreateBox('playerCube', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
-        this.cubeMesh.collisionGroup = 0b0;
+        // this.cubeMesh = MeshBuilder.CreateBox('playerCube', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
+        // this.cubeMesh.collisionGroup = 0b0;
     }
 
     public update(host: Entity) {
@@ -25,9 +25,9 @@ export class CharacterGraphicsComponent implements GraphicsComponent {
         // }
 
         // TODO Interpolate between position changes because the physic component tick rate is not tied to the framerate.
-        this.cubeMesh.position = host.position;
+        // this.cubeMesh.position = host.position;
 
-        this.cubeMesh.rotationQuaternion = host.rotationQuaternion;
+        // this.cubeMesh.rotationQuaternion = host.rotationQuaternion;
     }
 
 }
