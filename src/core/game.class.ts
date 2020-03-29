@@ -1,6 +1,6 @@
 import 'babylonjs-loaders';
 
-import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3, PhysicsImpostor } from 'babylonjs';
+import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3, PhysicsImpostor, Texture } from 'babylonjs';
 
 import { CharacterGraphicsComponent } from './character/character-graphics.component';
 import { CharacterInputComponent } from './character/character-input.component';
@@ -9,6 +9,7 @@ import { Entity } from './entity.class';
 import { MapGraphicsComponent } from './map-graphics.component';
 import { MapPhysicsComponent } from './map-physics.component';
 import { CharacterCameraComponent } from './character/character-camera.component';
+import { AdvancedDynamicTexture } from 'babylonjs-gui';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -20,6 +21,8 @@ export class Game {
     private engine: Engine;
     private scene: Scene;
     private entities: Entity[] = [];
+
+    private gui: AdvancedDynamicTexture;
 
     constructor() {
         this.canvas = document.getElementById('renderCanvas');
@@ -39,6 +42,11 @@ export class Game {
             INPUT_MAP[event.sourceEvent.code] = event.sourceEvent.type === 'keydown';
         }));
 
+        this.gui = AdvancedDynamicTexture.CreateFullscreenUI("WeaponHUD", true, this.scene);
+        this.gui.getContext().imageSmoothingEnabled = false;
+        this.gui.idealWidth = 480;
+        this.gui.idealHeight = 270;
+
         this.createScene();
 
         this.scene.debugLayer.show();
@@ -55,6 +63,7 @@ export class Game {
 
         window.addEventListener('resize', () => {
             this.engine.resize();
+            this.gui.getContext().imageSmoothingEnabled = false;
         });
 
         this.scene.onPointerDown = () => {
@@ -87,7 +96,7 @@ export class Game {
         const playerPhysics = new CharacterPhysicsComponent(this.engine, this.scene);
         return new Entity(
             new CharacterInputComponent(playerPhysics),
-            new CharacterGraphicsComponent(this.engine, this.scene),
+            new CharacterGraphicsComponent(this.engine, this.gui, this.scene),
             playerPhysics,
             new CharacterCameraComponent(this.scene)
         );

@@ -1,8 +1,9 @@
-import { Mesh, MeshBuilder, Scene, Camera, Vector3, UniversalCamera, Nullable, Engine } from 'babylonjs';
+import { Scene, Engine } from 'babylonjs';
 
 import { Entity } from '../entity.class';
 import { GraphicsComponent } from '../graphics-component.interface';
-import { TICK_PER_SECOND } from './character-physics.component';
+import { AdvancedDynamicTexture, Image } from 'babylonjs-gui';
+import crossbow from "../../assets/images/weapons/crossbow3.png";
 
 export class CharacterGraphicsComponent implements GraphicsComponent {
 
@@ -10,9 +11,18 @@ export class CharacterGraphicsComponent implements GraphicsComponent {
     // private prevHostPosition = Vector3.Zero();
     // private elapsedTimeSec = 0;
 
-    constructor(private engine: Engine, scene: Scene) {
+    constructor(private engine: Engine, private gui: AdvancedDynamicTexture, scene: Scene) {
         // this.cubeMesh = MeshBuilder.CreateBox('playerCube', { height: 1.8, width: 0.5, depth: 0.5 }, scene);
         // this.cubeMesh.collisionGroup = 0b0;
+        // const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("WeaponHUD", true, scene, Texture.NEAREST_SAMPLINGMODE);
+        
+        const image = new Image("crossbow", crossbow);
+        image.width = "480px";
+        image.height = "270px";
+        image.stretch = Image.STRETCH_NONE;
+        image.verticalAlignment = Image.VERTICAL_ALIGNMENT_BOTTOM;
+        image.horizontalAlignment = Image.HORIZONTAL_ALIGNMENT_RIGHT;
+        this.gui.addControl(image);
     }
 
     public update(host: Entity) {
