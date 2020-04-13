@@ -10,6 +10,7 @@ import { MapGraphicsComponent } from './map-graphics.component';
 import { MapPhysicsComponent } from './map-physics.component';
 import { CharacterCameraComponent } from './character/character-camera.component';
 import { AdvancedDynamicTexture } from 'babylonjs-gui';
+import { ImpostorGraphicsComponent } from './impostor/impostor-graphics.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -90,6 +91,12 @@ export class Game {
         this.addEntity(player);
 
         player.position = new Vector3(9.7, 10, 0);
+
+        const arrow = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
+
+        this.addEntity(arrow);
+
+        arrow.position = new Vector3(0, 1, 0);
     }
 
     private buildPlayerEntity(): Entity {
