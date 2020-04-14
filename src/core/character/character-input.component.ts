@@ -6,6 +6,7 @@ import { InputComponent } from '../input-component.interface';
 import { CharacterPhysicsComponent } from './character-physics.component';
 
 const JUMP_VELOCITY = 5;
+const MOVE_SPEED = 6;
 
 export class CharacterInputComponent implements InputComponent {
 
@@ -43,7 +44,7 @@ export class CharacterInputComponent implements InputComponent {
         direction.rotateByQuaternionToRef(verticalAxisRotation, directionFromRotation);
 
         if (this.characterPhysics.touchingGround) {
-            const directionalSpeed = directionFromRotation.normalize().scale(10).add(new Vector3(0, host.velocity.y, 0));
+            const directionalSpeed = directionFromRotation.normalize().scale(MOVE_SPEED).add(new Vector3(0, host.velocity.y, 0));
             host.velocity = directionalSpeed;
         } else {
             // host.velocity = host.velocity.multiply(directionFromRotation.multiplyByFloats(0.5, 1, 0.5));

@@ -93,10 +93,16 @@ export class Game {
         player.position = new Vector3(9.7, 10, 0);
 
         const arrow = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
+        const arrow2 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
+        const arrow3 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
 
         this.addEntity(arrow);
+        this.addEntity(arrow2);
+        this.addEntity(arrow3);
 
         arrow.position = new Vector3(0, 1, 0);
+        arrow2.position = new Vector3(4, 4, 0);
+        arrow3.position = new Vector3(-4, 0.05, 0);
     }
 
     private buildPlayerEntity(): Entity {
