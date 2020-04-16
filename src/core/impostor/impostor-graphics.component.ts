@@ -1,7 +1,7 @@
 import { Entity } from '../entity.class';
 import { GraphicsComponent } from '../graphics-component.interface';
 import arrow from "../../assets/images/arrow.png";
-import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3 } from 'babylonjs';
+import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3, FreeCamera } from 'babylonjs';
 
 export class ImpostorGraphicsComponent implements GraphicsComponent {
 
@@ -66,10 +66,17 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
         this.sphere.position = host.position;
         this.sprite.position = host.position;
         
-        const camera = this.scene.activeCamera;
+        const camera = this.scene.activeCamera as FreeCamera;
         if (camera) {
-            // this.sprite.angle = camera.getProjectionMatrix();
             const delta = host.position.subtract(camera.position);
+            
+            // TODO
+            // const cross = Vector3.Cross(camera.rotationQuaternion.toEulerAngles(), this.sphere.rotation);
+            const rotation = camera.rotation.subtract(this.sphere.rotation);
+            const dot = Vector3.Dot(delta.normalizeToNew(), rotation);
+            // console.log(cross);
+            this.sprite.angle = rotation.y;
+
             const ray = new Ray(camera.position, delta, delta.length());
             const hit = ray.intersectsMesh(this.sphere);
 
