@@ -12,6 +12,9 @@ import { CharacterCameraComponent } from './character/character-camera.component
 import { AdvancedDynamicTexture } from 'babylonjs-gui';
 import { ImpostorGraphicsComponent } from './impostor/impostor-graphics.component';
 
+import arrowSprite from "../assets/images/arrow.png";
+import monkeySprite from "../assets/images/monkey.png";
+
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
 const GRAVITY_Y = -9.81;
@@ -92,13 +95,24 @@ export class Game {
 
         player.position = new Vector3(9.7, 10, 0);
 
-        const arrow = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
-        const arrow2 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
-        const arrow3 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene), { update: () => null });
-
+        const arrow = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
+        const arrow2 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
+        const arrow3 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
+        
         this.addEntity(arrow);
         this.addEntity(arrow2);
         this.addEntity(arrow3);
+        
+        const spacing = 1;
+        const count = 15;
+        const offsetX = 10;
+        const offsetZ = 10;
+        for (let i = 0; i < count * count; i++ ) {
+            // const monkey = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
+            const monkey = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, monkeySprite, { segments: 16, rings: 8, frameHeight: 64, frameWidth: 64 }), { update: () => null });
+            this.addEntity(monkey);
+            monkey.position = new Vector3(i % count * spacing + offsetX, 1, Math.floor(i / count) * spacing + offsetZ);
+        }
 
         arrow.position = new Vector3(0, 1, 0);
         arrow2.position = new Vector3(4, 4, 0);

@@ -1,36 +1,36 @@
 import { Entity } from '../entity.class';
 import { GraphicsComponent } from '../graphics-component.interface';
-import arrow from "../../assets/images/arrow.png";
-import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3, FreeCamera } from 'babylonjs';
+import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3, FreeCamera, Texture } from 'babylonjs';
 
 export class ImpostorGraphicsComponent implements GraphicsComponent {
 
     private sprite: Sprite;
     private sphere: Mesh;
 
-    private debugSphere: Mesh;
-    private debugVertices: Mesh[];
+    // private debugSphere: Mesh;
+    // private debugVertices: Mesh[];
 
-    private redMaterial: StandardMaterial;
-    private whiteMat: StandardMaterial;
+    // private redMaterial: StandardMaterial;
+    // private whiteMat: StandardMaterial;
 
-    constructor(private scene: Scene) {
-        var spriteManagerArrow = new SpriteManager("arrowManager", arrow, 2, { width: 128, height: 128 }, scene);
-        this.sprite = new Sprite("sprite", spriteManagerArrow);
+    private debug = false;
+
+    constructor(private scene: Scene, spritesheet: string, params = { segments: 8, rings: 4, frameHeight: 128, frameWidth: 128 }) {
+        var spriteManager = new SpriteManager("spritesheet", spritesheet, 2, { width: params.frameWidth, height: params.frameHeight }, scene, undefined, Texture.NEAREST_NEAREST_MIPNEAREST);
+        this.sprite = new Sprite("sprite", spriteManager);
         this.sprite.cellIndex = 0;
 
-        const segments = 8;
-        const rings = 4;
-        const vertices = this.createSphereVertices(segments, rings, 0.25);
+        const vertices = this.createSphereVertices(params.segments, params.rings, 0.25);
         const vertexData = new VertexData();
         vertexData.positions = vertices;
-        vertexData.indices = this.createSphereFaces(segments, rings);
+        vertexData.indices = this.createSphereFaces(params.segments, params.rings);
         vertexData.normals = vertices.map((_, index) => index % 3 === 0 ? 0 : 1);
 
         this.sphere = new Mesh("custom", scene);
         vertexData.applyToMesh(this.sphere);
         this.sphere.updateFacetData();
-        this.sphere.isVisible = true;
+        this.sphere.isVisible = this.debug;
+        this.sphere.checkCollisions = false;
 
         const wireframeMat = new StandardMaterial("wireframe", scene);
         wireframeMat.wireframe = true;
@@ -38,28 +38,34 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
         this.sphere.material = wireframeMat;
 
         // DEBUG
-        this.whiteMat = new StandardMaterial("white", scene);
-        this.whiteMat.alpha = 1;
-        this.whiteMat.diffuseColor = new Color3(0.0, 1.0, 0.0);
+        // this.whiteMat = new StandardMaterial("white", scene);
+        // this.whiteMat.alpha = 1;
+        // this.whiteMat.diffuseColor = new Color3(0.0, 1.0, 0.0);
 
-        this.redMaterial = new StandardMaterial("red", scene);
-        this.redMaterial.alpha = 1;
-        this.redMaterial.diffuseColor = new Color3(1.0, 0.0, 0.0);
+        // this.redMaterial = new StandardMaterial("red", scene);
+        // this.redMaterial.alpha = 1;
+        // this.redMaterial.diffuseColor = new Color3(1.0, 0.0, 0.0);
 
-        this.debugSphere = MeshBuilder.CreateSphere("debug1", { diameter: 0.025 }, scene);
-        this.debugVertices = [
-            MeshBuilder.CreateSphere("debug2", { diameter: 0.025 }, scene),
-            MeshBuilder.CreateSphere("debug3", { diameter: 0.025 }, scene),
-            MeshBuilder.CreateSphere("debug4", { diameter: 0.025 }, scene),
-        ];
+        // this.debugSphere = MeshBuilder.CreateSphere("debug1", { diameter: 0.025 }, scene);
+        // this.debugSphere.checkCollisions = false;
 
-        this.debugVertices[0].material = this.whiteMat;
-        this.debugVertices[1].material = this.whiteMat;
-        this.debugVertices[2].material = this.whiteMat;
+        // this.debugSphere.isVisible = this.debug;
+        // this.debugVertices = [
+        //     MeshBuilder.CreateSphere("debug2", { diameter: 0.025 }, scene),
+        //     MeshBuilder.CreateSphere("debug3", { diameter: 0.025 }, scene),
+        //     MeshBuilder.CreateSphere("debug4", { diameter: 0.025 }, scene),
+        // ];
 
-        if (this.scene.activeCamera) {
-            console.log(this.scene.activeCamera.getProjectionMatrix());
-        }
+        // this.debugVertices[0].isVisible = this.debug;
+        // this.debugVertices[0].checkCollisions = false;
+        // this.debugVertices[1].isVisible = this.debug;
+        // this.debugVertices[1].checkCollisions = false;
+        // this.debugVertices[2].isVisible = this.debug;
+        // this.debugVertices[2].checkCollisions = false;
+
+        // this.debugVertices[0].material = this.whiteMat;
+        // this.debugVertices[1].material = this.whiteMat;
+        // this.debugVertices[2].material = this.whiteMat;
     }
 
     public update(host: Entity) {
@@ -75,14 +81,14 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
             const rotation = camera.rotation.subtract(this.sphere.rotation);
             const dot = Vector3.Dot(delta.normalizeToNew(), rotation);
             // console.log(cross);
-            this.sprite.angle = rotation.y;
+            // this.sprite.angle = rotation.y;
 
             const ray = new Ray(camera.position, delta, delta.length());
             const hit = ray.intersectsMesh(this.sphere);
 
             if (hit && hit.pickedPoint) {
                 // DEBUG
-                this.debugSphere.position = hit.pickedPoint;
+                // this.debugSphere.position = hit.pickedPoint;
 
                 const index = hit.faceId * 3;
                 const indices = this.sphere.getIndices();
@@ -97,9 +103,9 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
                     const v3 = this.sphere.position.add(new Vector3(vertices[v3Index], vertices[v3Index + 1], vertices[v3Index + 2]));
 
                     // DEBUG
-                    this.debugVertices[0].position = v1;
-                    this.debugVertices[1].position = v2;
-                    this.debugVertices[2].position = v3;
+                    // this.debugVertices[0].position = v1;
+                    // this.debugVertices[1].position = v2;
+                    // this.debugVertices[2].position = v3;
 
                     const v1Dist = Vector3.Distance(hit.pickedPoint, v1);
                     const v2Dist = Vector3.Distance(hit.pickedPoint, v2);
@@ -107,19 +113,19 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
 
                     if (v1Dist < v2Dist && v1Dist < v3Dist) {
                         this.sprite.cellIndex = vertexIndices[0];
-                        this.debugVertices[0].material = this.redMaterial
-                        this.debugVertices[1].material = this.whiteMat
-                        this.debugVertices[2].material = this.whiteMat
+                        // this.debugVertices[0].material = this.redMaterial
+                        // this.debugVertices[1].material = this.whiteMat
+                        // this.debugVertices[2].material = this.whiteMat
                     } else if (v2Dist < v1Dist && v2Dist < v3Dist) {
                         this.sprite.cellIndex = vertexIndices[1];
-                        this.debugVertices[0].material = this.whiteMat
-                        this.debugVertices[1].material = this.redMaterial
-                        this.debugVertices[2].material = this.whiteMat
+                        // this.debugVertices[0].material = this.whiteMat
+                        // this.debugVertices[1].material = this.redMaterial
+                        // this.debugVertices[2].material = this.whiteMat
                     } else if (v3Dist < v1Dist && v3Dist < v2Dist) {
                         this.sprite.cellIndex = vertexIndices[2];
-                        this.debugVertices[0].material = this.whiteMat
-                        this.debugVertices[1].material = this.whiteMat
-                        this.debugVertices[2].material = this.redMaterial
+                        // this.debugVertices[0].material = this.whiteMat
+                        // this.debugVertices[1].material = this.whiteMat
+                        // this.debugVertices[2].material = this.redMaterial
                     }
                 }
 
