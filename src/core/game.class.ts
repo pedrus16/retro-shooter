@@ -1,6 +1,6 @@
 import 'babylonjs-loaders';
 
-import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3, PhysicsImpostor, Texture } from 'babylonjs';
+import { ActionManager, Engine, ExecuteCodeAction, HemisphericLight, Scene, UniversalCamera, Vector3, PhysicsImpostor, Texture, Quaternion, Matrix } from 'babylonjs';
 
 import { CharacterGraphicsComponent } from './character/character-graphics.component';
 import { CharacterInputComponent } from './character/character-input.component';
@@ -14,6 +14,7 @@ import { ImpostorGraphicsComponent } from './impostor/impostor-graphics.componen
 
 import arrowSprite from "../assets/images/arrow.png";
 import monkeySprite from "../assets/images/monkey.png";
+import boltSprite from "../assets/images/bolt.png";
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -95,28 +96,19 @@ export class Game {
 
         player.position = new Vector3(9.7, 10, 0);
 
-        const arrow = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
-        const arrow2 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
-        const arrow3 = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
-        
-        this.addEntity(arrow);
-        this.addEntity(arrow2);
-        this.addEntity(arrow3);
-        
-        const spacing = 1;
-        const count = 15;
-        const offsetX = 10;
-        const offsetZ = 10;
-        for (let i = 0; i < count * count; i++ ) {
-            // const monkey = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, arrowSprite), { update: () => null });
-            const monkey = new Entity({ update: () => null }, new ImpostorGraphicsComponent(this.scene, monkeySprite, { segments: 16, rings: 8, frameHeight: 64, frameWidth: 64 }), { update: () => null });
-            this.addEntity(monkey);
-            monkey.position = new Vector3(i % count * spacing + offsetX, 1, Math.floor(i / count) * spacing + offsetZ);
-        }
+        let angle = 0;
+        const bolt = new Entity({
+            update: (host) => {
+                const elapsedTimeSec = this.engine.getDeltaTime() / 1000;
 
-        arrow.position = new Vector3(0, 1, 0);
-        arrow2.position = new Vector3(4, 4, 0);
-        arrow3.position = new Vector3(-4, 0.05, 0);
+                angle += Math.PI / 0.25 * elapsedTimeSec;
+                host.rotationQuaternion = Quaternion.RotationAxis(new Vector3(0, 1, 0), angle);
+            }
+        }, new ImpostorGraphicsComponent(this.scene, boltSprite, { segments: 8, rings: 4, frameWidth: 64, frameHeight: 64 }), { update: () => null });
+
+        this.addEntity(bolt);
+
+        bolt.position = new Vector3(0, 1, 0);
     }
 
     private buildPlayerEntity(): Entity {

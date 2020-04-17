@@ -20,17 +20,18 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
         this.sprite = new Sprite("sprite", spriteManager);
         this.sprite.cellIndex = 0;
 
-        const vertices = this.createSphereVertices(params.segments, params.rings, 0.25);
+        const vertices = this.createSphereVertices(params.segments, params.rings, 0.1);
         const vertexData = new VertexData();
         vertexData.positions = vertices;
         vertexData.indices = this.createSphereFaces(params.segments, params.rings);
         vertexData.normals = vertices.map((_, index) => index % 3 === 0 ? 0 : 1);
 
         this.sphere = new Mesh("custom", scene);
+        this.sphere.checkCollisions = false;
+        this.sphere.collisionGroup = 0b0;
         vertexData.applyToMesh(this.sphere);
         this.sphere.updateFacetData();
         this.sphere.isVisible = this.debug;
-        this.sphere.checkCollisions = false;
 
         const wireframeMat = new StandardMaterial("wireframe", scene);
         wireframeMat.wireframe = true;
@@ -70,12 +71,13 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
 
     public update(host: Entity) {
         this.sphere.position = host.position;
+        this.sphere.rotationQuaternion = host.rotationQuaternion;
         this.sprite.position = host.position;
-        
+
         const camera = this.scene.activeCamera as FreeCamera;
         if (camera) {
             const delta = host.position.subtract(camera.position);
-            
+
             // TODO
             // const cross = Vector3.Cross(camera.rotationQuaternion.toEulerAngles(), this.sphere.rotation);
             const rotation = camera.rotation.subtract(this.sphere.rotation);
@@ -94,13 +96,17 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
                 const indices = this.sphere.getIndices();
                 const vertices = this.sphere.getVerticesData(VertexBuffer.PositionKind);
                 if (indices && vertices) {
+                    this.sphere.computeWorldMatrix();
+                    var matrix = this.sphere.getWorldMatrix();
+                    // var worldPosition = Vector3.TransformCoordinates(local_position, matrix);
+
                     const vertexIndices = [indices[index], indices[index + 1], indices[index + 2]];
                     const v1Index = vertexIndices[0] * 3;
-                    const v1 = this.sphere.position.add(new Vector3(vertices[v1Index], vertices[v1Index + 1], vertices[v1Index + 2]));
+                    const v1 = Vector3.TransformCoordinates(new Vector3(vertices[v1Index], vertices[v1Index + 1], vertices[v1Index + 2]), matrix);
                     const v2Index = vertexIndices[1] * 3;
-                    const v2 = this.sphere.position.add(new Vector3(vertices[v2Index], vertices[v2Index + 1], vertices[v2Index + 2]));
+                    const v2 = Vector3.TransformCoordinates(new Vector3(vertices[v2Index], vertices[v2Index + 1], vertices[v2Index + 2]), matrix);
                     const v3Index = vertexIndices[2] * 3;
-                    const v3 = this.sphere.position.add(new Vector3(vertices[v3Index], vertices[v3Index + 1], vertices[v3Index + 2]));
+                    const v3 = Vector3.TransformCoordinates(new Vector3(vertices[v3Index], vertices[v3Index + 1], vertices[v3Index + 2]), matrix);
 
                     // DEBUG
                     // this.debugVertices[0].position = v1;

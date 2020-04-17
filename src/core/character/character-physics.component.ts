@@ -1,4 +1,4 @@
-import { Engine, Scene, MeshBuilder, Mesh, Vector3, Ray } from 'babylonjs';
+import { Engine, Scene, MeshBuilder, Mesh, Vector3, Ray, Quaternion } from 'babylonjs';
 
 import { Entity } from '../entity.class';
 import { PhysicsComponent } from '../physics-component.interface';
@@ -37,6 +37,7 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
         while (this.elapsedTimeSec >= tickDurationSec) {
             const deltaTimeSec = tickDurationSec;
             this.cubeMesh.position = host.position;
+            this.cubeMesh.rotationQuaternion = Quaternion.FromEulerAngles(0, host.rotationQuaternion.toEulerAngles().y, 0);
     
             const gravity = this.scene.gravity.scale(deltaTimeSec);
             host.velocity = host.velocity.add(gravity);
@@ -73,6 +74,10 @@ export class CharacterPhysicsComponent implements PhysicsComponent {
 
     public get touchingGround() {
         return this.groundHit;
-    } 
+    }
+
+    public calcMovePOV(right: number, up: number, forward: number): Vector3 {
+        return this.cubeMesh.calcMovePOV(right, up, forward);
+    }
 
 }

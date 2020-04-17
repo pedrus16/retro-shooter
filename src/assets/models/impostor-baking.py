@@ -28,7 +28,7 @@ osdir = os.path.dirname(scene.render.filepath)
 bpy.ops.object.camera_add()
 camera_obj = bpy.context.active_object
 camera_obj.data.type = 'ORTHO'
-camera_obj.data.ortho_scale = 3.5
+camera_obj.data.ortho_scale = 2
 bpy.ops.object.constraint_add(type='TRACK_TO')
 camera_obj.constraints['Track To'].target = target
 camera_obj.constraints['Track To'].up_axis = 'UP_Y'
@@ -38,7 +38,7 @@ scene.camera = camera_obj
 # 8, 4
 # 12, 6
 # 16, 8
-vertices = create_sphere(16, 8, 2)
+vertices = create_sphere(8, 4, 2)
 
 # RENDERING    
 index = 0

@@ -15,13 +15,14 @@ export class CharacterCameraComponent implements CameraComponent {
         this.camera.attachControl(canvas, true);
         this.camera.minZ = 0;
         this.camera.angularSensibility = 1000;
+        this.camera.checkCollisions = false;
     }
 
     public update(host: Entity) {
         //  TODO Interpolate host position to have smooth movement;
         this.camera.position = host.position.add(new Vector3(0, 0.9, 0));
-        const verticalAxisRotation = new Quaternion(0, this.camera.rotationQuaternion.y, 0, this.camera.rotationQuaternion.w);
-        host.rotationQuaternion = verticalAxisRotation;
+        // const verticalAxisRotation = new Quaternion(0, this.camera.rotationQuaternion.y, 0, this.camera.rotationQuaternion.w);
+        host.rotationQuaternion = this.camera.rotationQuaternion;
     }
 
 }

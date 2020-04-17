@@ -18,16 +18,16 @@ export class CharacterInputComponent implements InputComponent {
         const direction = Vector3.Zero();
 
         if (INPUT_MAP.KeyW) {
-            direction.z += 1;
-        }
-        if (INPUT_MAP.KeyS) {
             direction.z -= 1;
         }
+        if (INPUT_MAP.KeyS) {
+            direction.z += 1;
+        }
         if (INPUT_MAP.KeyD) {
-            direction.x += 1;
+            direction.x -= 1;
         }
         if (INPUT_MAP.KeyA) {
-            direction.x -= 1;
+            direction.x += 1;
         }
         if (INPUT_MAP.Space) {
             if (this.spaceReleased && this.characterPhysics.touchingGround) {
@@ -38,13 +38,15 @@ export class CharacterInputComponent implements InputComponent {
             this.spaceReleased = true;
         }
 
-        const directionFromRotation = Vector3.Zero();
+        // const directionFromRotation = Vector3.Zero();
+
         // TODO Fix me when looking at the ground the direction is messed up
-        const verticalAxisRotation = new Quaternion(0, host.rotationQuaternion.y, 0, host.rotationQuaternion.w);
-        direction.rotateByQuaternionToRef(verticalAxisRotation, directionFromRotation);
+        // const verticalAxisRotation = new Quaternion(0, host.rotationQuaternion.y, 0, host.rotationQuaternion.w);
+        // direction.rotateByQuaternionToRef(verticalAxisRotation, directionFromRotation);
+        const displacement = this.characterPhysics.calcMovePOV(direction.x, 0, direction.z);
 
         if (this.characterPhysics.touchingGround) {
-            const directionalSpeed = directionFromRotation.normalize().scale(MOVE_SPEED).add(new Vector3(0, host.velocity.y, 0));
+            const directionalSpeed = displacement.normalize().scale(MOVE_SPEED).add(new Vector3(0, host.velocity.y, 0));
             host.velocity = directionalSpeed;
         } else {
             // host.velocity = host.velocity.multiply(directionFromRotation.multiplyByFloats(0.5, 1, 0.5));
