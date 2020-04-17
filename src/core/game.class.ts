@@ -15,6 +15,7 @@ import { ImpostorGraphicsComponent } from './impostor/impostor-graphics.componen
 import arrowSprite from "../assets/images/arrow.png";
 import monkeySprite from "../assets/images/monkey.png";
 import boltSprite from "../assets/images/bolt.png";
+import { ProjectilePhysicsComponent } from './projectile/projectile-physics.component';
 
 export const INPUT_MAP: { [code: string]: boolean } = {};
 
@@ -25,7 +26,7 @@ export class Game {
     private canvas: any;
     private engine: Engine;
     private scene: Scene;
-    private entities: Entity[] = [];
+    private static entities: Entity[] = [];
 
     private gui: AdvancedDynamicTexture;
 
@@ -76,7 +77,7 @@ export class Game {
         };
     }
 
-    public addEntity(entity: Entity) {
+    public static addEntity(entity: Entity) {
         this.entities.push(entity);
     }
 
@@ -91,8 +92,8 @@ export class Game {
         const ground = new Entity({ update: () => null }, new MapGraphicsComponent(this.scene), { update: () => null });
         const player = this.buildPlayerEntity();
 
-        this.addEntity(ground);
-        this.addEntity(player);
+        Game.addEntity(ground);
+        Game.addEntity(player);
 
         player.position = new Vector3(9.7, 10, 0);
 
@@ -101,12 +102,12 @@ export class Game {
             update: (host) => {
                 const elapsedTimeSec = this.engine.getDeltaTime() / 1000;
 
-                angle += Math.PI / 0.25 * elapsedTimeSec;
+                angle += Math.PI / 2 * elapsedTimeSec;
                 host.rotationQuaternion = Quaternion.RotationAxis(new Vector3(0, 1, 0), angle);
             }
         }, new ImpostorGraphicsComponent(this.scene, boltSprite, { segments: 8, rings: 4, frameWidth: 64, frameHeight: 64 }), { update: () => null });
 
-        this.addEntity(bolt);
+        Game.addEntity(bolt);
 
         bolt.position = new Vector3(0, 1, 0);
     }
@@ -114,7 +115,7 @@ export class Game {
     private buildPlayerEntity(): Entity {
         const playerPhysics = new CharacterPhysicsComponent(this.engine, this.scene);
         return new Entity(
-            new CharacterInputComponent(playerPhysics),
+            new CharacterInputComponent(playerPhysics, this.scene, this.engine),
             new CharacterGraphicsComponent(this.engine, this.gui, this.scene),
             playerPhysics,
             new CharacterCameraComponent(this.scene)
@@ -122,7 +123,19 @@ export class Game {
     }
 
     private update() {
-        this.entities.forEach((entity) => entity.update(this.scene));
+        Game.entities.forEach((entity) => entity.update(this.scene));
+    }
+
+    private createProjectile(initialVelocity: Vector3): Entity {
+        const ent = new Entity(
+            { update: () => null },
+            new ImpostorGraphicsComponent(this.scene, boltSprite, { segments: 8, rings: 4, frameWidth: 64, frameHeight: 64 }),
+            new ProjectilePhysicsComponent(this.engine, this.scene)
+        );
+
+        ent.velocity = initialVelocity;
+
+        return ent;
     }
 
 }

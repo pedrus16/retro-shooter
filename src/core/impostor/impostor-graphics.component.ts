@@ -1,6 +1,6 @@
 import { Entity } from '../entity.class';
 import { GraphicsComponent } from '../graphics-component.interface';
-import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3, FreeCamera, Texture } from 'babylonjs';
+import { Mesh, MeshBuilder, Scene, SpriteManager, Sprite, Ray, VertexBuffer, StandardMaterial, VertexData, Vector3, Material, Color3, FreeCamera, Texture, AxesViewer } from 'babylonjs';
 
 export class ImpostorGraphicsComponent implements GraphicsComponent {
 
@@ -14,13 +14,14 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
     // private whiteMat: StandardMaterial;
 
     private debug = false;
+    // private debugBox: Mesh;
 
     constructor(private scene: Scene, spritesheet: string, params = { segments: 8, rings: 4, frameHeight: 128, frameWidth: 128 }) {
         var spriteManager = new SpriteManager("spritesheet", spritesheet, 2, { width: params.frameWidth, height: params.frameHeight }, scene, undefined, Texture.NEAREST_NEAREST_MIPNEAREST);
         this.sprite = new Sprite("sprite", spriteManager);
         this.sprite.cellIndex = 0;
 
-        const vertices = this.createSphereVertices(params.segments, params.rings, 0.1);
+        const vertices = this.createSphereVertices(params.segments, params.rings, 0.5);
         const vertexData = new VertexData();
         vertexData.positions = vertices;
         vertexData.indices = this.createSphereFaces(params.segments, params.rings);
@@ -37,6 +38,9 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
         wireframeMat.wireframe = true;
         wireframeMat.alpha = 0.5;
         this.sphere.material = wireframeMat;
+
+        // this.debugBox = MeshBuilder.CreateBox("debug", { size: 1, width: 0.5, height: 0.25 });
+        // this.debugBox.material = wireframeMat;
 
         // DEBUG
         // this.whiteMat = new StandardMaterial("white", scene);
@@ -74,14 +78,23 @@ export class ImpostorGraphicsComponent implements GraphicsComponent {
         this.sphere.rotationQuaternion = host.rotationQuaternion;
         this.sprite.position = host.position;
 
+        // this.debugBox.position = host.position;
+        // this.debugBox.rotationQuaternion = host.rotationQuaternion;
+
         const camera = this.scene.activeCamera as FreeCamera;
         if (camera) {
             const delta = host.position.subtract(camera.position);
 
             // TODO
+            // const direction = delta.normalizeToNew();
+            // const angle = Vector3.Dot(this.sphere.rotationQuaternion.toEulerAngles(), direction);
+            // const rotation = this.sphere.rotationQuaternion.toEulerAngles().multiply(direction);
+            // console.log(angle);
+            // this.sprite.angle = angle;
+            
             // const cross = Vector3.Cross(camera.rotationQuaternion.toEulerAngles(), this.sphere.rotation);
-            const rotation = camera.rotation.subtract(this.sphere.rotation);
-            const dot = Vector3.Dot(delta.normalizeToNew(), rotation);
+            // const rotation = camera.rotation.subtract(this.sphere.rotation);
+            // const dot = Vector3.Dot(delta.normalizeToNew(), rotation);
             // console.log(cross);
             // this.sprite.angle = rotation.y;
 
