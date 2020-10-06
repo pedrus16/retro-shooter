@@ -126,16 +126,4 @@ export class Game {
         Game.entities.forEach((entity) => entity.update(this.scene));
     }
 
-    private createProjectile(initialVelocity: Vector3): Entity {
-        const ent = new Entity(
-            { update: () => null },
-            new ImpostorGraphicsComponent(this.scene, boltSprite, { segments: 8, rings: 4, frameWidth: 64, frameHeight: 64 }),
-            new ProjectilePhysicsComponent(this.engine, this.scene)
-        );
-
-        ent.velocity = initialVelocity;
-
-        return ent;
-    }
-
 }
